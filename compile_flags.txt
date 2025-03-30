@@ -1,0 +1,8 @@
+-IC:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include
+-IC:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um
+-IC:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\ucrt
+-IC:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared
+-fms-extensions
+-fms-compatibility
+-fdelayed-template-parsing
+-D_CRT_SECURE_NO_WARNINGS

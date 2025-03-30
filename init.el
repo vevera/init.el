@@ -218,3 +218,11 @@
   (projectile-mode +1)
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
+
+(use-package eglot)
+
+(use-package company)
+
+(add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)

@@ -1,1 +1,1 @@
-("~/.emacs.d/" "c:/Users/Daniel/Documents/Repos/Ray-Casting/" "c:/Users/Daniel/Documents/Repos/test/")
+("~/.emacs.d/" "c:/Users/Daniel/Documents/Repos/eJson/" "c:/Users/Daniel/Documents/Repos/eJson/build/" "c:/Users/Daniel/Documents/Repos/clay/" "c:/Users/Daniel/Documents/Repos/Ray-Casting/" "c:/Users/Daniel/Documents/Repos/test/")

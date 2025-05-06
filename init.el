@@ -1,91 +1,3 @@
-;; (setq inhibit-startup-message t)
-;; (setq package-enable-at-startup nil)
-;; (setq w32-ralt-modifier 'super)  ;; Use Right Alt as Super
-
-;; (defvar bootstrap-version)
-;; (let ((bootstrap-file
-;;        (expand-file-name
-;;         "straight/repos/straight.el/bootstrap.el"
-;;         (or (bound-and-true-p straight-base-dir)
-;;             user-emacs-directory)))
-;;       (bootstrap-version 7))
-;;   (unless (file-exists-p bootstrap-file)
-;;     (with-current-buffer
-;;         (url-retrieve-synchronously
-;;          "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-;;          'silent 'inhibit-cookies)
-;;       (goto-char (point-max))
-;;       (eval-print-last-sexp)))
-;;   (load bootstrap-file nil 'nomessage))
-
-;; (straight-use-package 'doom-themes)
-;; (require 'doom-themes)
-
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-
-;;   ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each
-;;   ;; theme may have their own settings.
-;;   (load-theme 'doom-one t)
-
-;;   ;; Enable flashing mode-line on errors
-;;   (doom-themes-visual-bell-config)
-
-;;   ;; Enable custom neotree theme
-;;   (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
-
-;; (setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
-;; 					   projectile hydra flycheck company avy which-key helm-xref dap-mode))
-
-;; (when (cl-find-if-not #'package-installed-p package-selected-packages)
-;;   (package-refresh-contents)
-;;   (mapc #'package-install package-selected-packages))
-
-;; ;; sample `helm' configuration use https://github.com/emacs-helm/helm/ for details
-;; (helm-mode)
-;; (require 'helm-xref)
-;; (define-key global-map [remap find-file] #'helm-find-files)
-;; (define-key global-map [remap execute-extended-command] #'helm-M-x)
-;; (define-key global-map [remap switch-to-buffer] #'helm-mini)
-
-;; (which-key-mode)
-;; (add-hook 'c-mode-hook 'lsp)
-;; (add-hook 'c++-mode-hook 'lsp)
-
-;; (setq gc-cons-threshold (* 100 1024 1024)
-;;       read-process-output-max (* 1024 1024)
-;;       treemacs-space-between-root-nodes nil
-;;       company-idle-delay 0.0
-;;       company-minimum-prefix-length 1
-;;       lsp-idle-delay 0.1)  ;; clangd is fast
-
-;; (with-eval-after-load 'lsp-mode
-;;   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
-;;   (require 'dap-cpptools)
-;;   (yas-global-mode))
-
-;; ;; (add-to-list 'lsp-clients-clangd-args "--compile-commands-dir=./build")
-;; ;; (add-to-list 'lsp-clients-clangd-args "--query-driver=C:\\Program Files\\LLVM\\bin\\clang-cl.exe")
-
-;; ;; (require 'eglot)
-;; ;; (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
-;; ;; (add-hook 'c-mode-hook 'eglot-ensure)
-;; ;; (add-hook 'c++-mode-hook 'eglot-ensure)
-
-;; ;; Set initial frame size and position
-;; (defun my/set-initial-frame ()
-;;   (let* ((base-factor 0.40)
-;; 	 (base-factor-height 0.80)
-;; 	(a-width (* (display-pixel-width) base-factor))
-;;         (a-height (* (display-pixel-height) base-factor-height))
-;;         (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
-;; 	(a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
-;;     (set-frame-position (selected-frame) a-left a-top)
-;;     (set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
-;; (setq frame-resize-pixelwise t)
-;; (my/set-initial-frame)
-
 ;must do..
 (setq inhibit-startup-message t)
 
@@ -102,6 +14,8 @@
 ;save files to appear everywhere.
 (setq auto-save-file-name-transforms
       `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+(setq lock-file-name-transforms `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+
 ;this i think is working, the backup files are now in a safe place
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
@@ -122,7 +36,7 @@
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;nice font that the youtube guy use, might change that in the future.
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 130)
+(set-face-attribute 'default nil :font "Fira Code Retina" :height 100)
 
 ;necessary to install other packages
 (require 'package)
@@ -148,6 +62,7 @@
 (ivy-mode)
 
 (global-set-key "\C-s" 'swiper)
+(global-unset-key (kbd "C-x C-c"))
 
 (use-package all-the-icons)
 
@@ -178,6 +93,9 @@
   :init
   (ivy-rich-mode 1))
 
+(use-package clang-format)
+(setq clang-format-style "file")
+
 ;making emacs my own editor, keys that i use a lot being maped to 
 ;easy bindings
 (use-package general)
@@ -200,7 +118,8 @@
 	(setq current-prefix-arg '(-1))
 	(call-interactively ' other-window))
   :which-key "go to the prev window"
-  "kk" '(delete-window :which-key "delete the currenct window"))
+  "kk" '(delete-window :which-key "delete the currenct window")
+  "kd" '(clang-format :which-key "clang-formating file"))
 
 ;preventing emacs from editing this file ..
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -219,6 +138,14 @@
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
 
+(add-to-list 'projectile-globally-ignored-directories ".cmake_artifacts")
+(add-to-list 'projectile-globally-ignored-directories ".git")
+(add-to-list 'projectile-globally-ignored-directories ".vscode")
+(add-to-list 'projectile-globally-ignored-directories "cmake_modules")
+(add-to-list 'projectile-globally-ignored-directories "node_modules")
+(add-to-list 'projectile-globally-ignored-directories "qt_6_6_0")
+(add-to-list 'projectile-globally-ignored-directories "Build")
+
 (use-package eglot)
 
 (use-package company)
@@ -226,3 +153,24 @@
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'javascript-mode-hook 'eglot-ensure)
+
+(use-package rg)
+
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . javascript-mode))
+
+(use-package neotree)
+(global-set-key [f8] 'neotree-toggle)
+
+(setq neo-window-position 'right)
+
+(defun somefunction ()
+  (interactive)
+  (funcall 'shell-command "cd c: &") 
+)

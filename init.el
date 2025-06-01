@@ -1,4 +1,42 @@
-;must do..
+;must do..  -*- lexical-binding: t;-*-
+
+;; This configs are comming from this link:
+;; https://github.com/doomemacs/doomemacs/blob/665b627b7c07c8d29ec8d334588cecc2ba308248/docs/faq.org#how-does-doom-start-up-so-quickly
+(setq package-quickstart t)
+
+(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+      gc-cons-percentage 0.6)
+
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold 16777216 ; 16mb
+          gc-cons-percentage 0.1)))
+
+(defvar doom-gc-cons-threshold gc-cons-threshold)
+        
+(defun doom-defer-garbage-collection-h ()
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun doom-restore-garbage-collection-h ()
+  ;; Defer it so that commands launched immediately after will enjoy the
+  ;; benefits.
+  (run-at-time
+   1 nil (lambda () (setq gc-cons-threshold doom-gc-cons-threshold))))
+
+(add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
+(add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+
+(defvar doom--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq file-name-handler-alist doom--file-name-handler-alist)))
+
+;;end of copy/paste
+
+
+(setq native-comp-speed 3)
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)
@@ -62,6 +100,7 @@
 (ivy-mode)
 
 (global-set-key "\C-s" 'swiper)
+(global-set-key "\C-r" 'swiper-isearch-backward)
 (global-unset-key (kbd "C-x C-c"))
 
 (use-package all-the-icons)
@@ -107,23 +146,35 @@
   :prefix-command 'my-custom-cmd
   :prefix-map 'my-custom-map)
 
-(my-custom-def "C-SPC" '(set-mark-command :which-key "select text")
+(defun other-previous-window ()
+    (interactive)
+	(setq current-prefix-arg '(-1))
+	(call-interactively ' other-window))
+
+(my-custom-def
+  "C-SPC" '(set-mark-command :which-key "select text")
+  "SPC" '(set-mark-command :which-key "select text")
   "n" '(switch-to-next-buffer :which-key "go to the next buffer")
   "p" '(switch-to-prev-buffer :which-key "go to the prev buffer")
   "C-n" '(switch-to-next-buffer :which-key "go to the next buffer")
   "C-p" '(switch-to-prev-buffer :which-key "go to the prev buffer")
   "o" '(other-window :which-key "go to the next window")
-  "i" (lambda ()
-	(interactive)
-	(setq current-prefix-arg '(-1))
-	(call-interactively ' other-window))
-  :which-key "go to the prev window"
+  "i" '(other-previous-window :which-key "go to the prev window")
+  "C-o" '(other-window :which-key "go to the next window")
+  "C-i" '(other-previous-window :which-key "go to the prev window")    
   "kk" '(delete-window :which-key "delete the currenct window")
-  "kd" '(clang-format :which-key "clang-formating file"))
+  "kd" '(clang-format :which-key "clang-formating file")
+  ";" '(comment-or-uncomment-region :which-key "coment region")
+  "u" '(undo-only :which-key "undo previous changes")
+  "r" '(undo-redo :which-key "redo")
+  "mf" '(make-frame :which-key "make frame")
+  "fn" '(next-window-any-frame :which-key "next frame")
+  "b" '(pop-global-mark :which-key "go back")
+  "g" '(revert-buffer :which-key "go back no file system")
+  "cr" '(counsel-rg :which-key "counsel rg" )
+  "rg" '(rg :which-key "rg"))
 
-;preventing emacs from editing this file ..
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
 
 ;my favorite theme
 (load-theme 'dracula t)
@@ -146,14 +197,30 @@
 (add-to-list 'projectile-globally-ignored-directories "qt_6_6_0")
 (add-to-list 'projectile-globally-ignored-directories "Build")
 
+(use-package go-mode)
+
 (use-package eglot)
 
 (use-package company)
 
+(setq major-mode-remap-alist
+ '((yaml-mode . yaml-ts-mode)
+   (bash-mode . bash-ts-mode)
+   (js2-mode . js-ts-mode)
+   (typescript-mode . typescript-ts-mode)
+   (json-mode . json-ts-mode)
+   (css-mode . css-ts-mode)
+   (python-mode . python-ts-mode)
+   (c-mode . c-ts-mode)
+   (c++-mode . c++-ts-mode)
+   (go-mode . go-ts-mode)))
+
 (add-hook 'after-init-hook 'global-company-mode)
-(add-hook 'c-mode-hook 'eglot-ensure)
-(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'c-ts-mode-hook 'eglot-ensure)
+(add-hook 'c++-ts-mode-hook 'eglot-ensure)
 (add-hook 'javascript-mode-hook 'eglot-ensure)
+(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+(add-hook 'go-ts-mode 'eglot-ensure)
 
 (use-package rg)
 
@@ -173,4 +240,8 @@
 (defun somefunction ()
   (interactive)
   (funcall 'shell-command "cd c: &") 
-)
+ )
+
+;;go setup
+
+

@@ -4,3 +4,8 @@ auto-save-list/
 backups/
 tramp
 auto-save/
+eln-cache/
+init.elc
+srecode-map.el
+transient/
+tree-sitter/

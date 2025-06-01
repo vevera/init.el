@@ -9,3 +9,6 @@ init.elc
 srecode-map.el
 transient/
 tree-sitter/
+tutorial/    
+package-quickstart.el
+package-quickstart.elc

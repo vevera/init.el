@@ -6,9 +6,8 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    '(all-the-icons clang-format company counsel doom-modeline
-                   dracula-theme general go-mode ht hydra ivy-rich
-                   markdown-mode neotree projectile rainbow-delimiters
-                   rg spinner)))
+                   dracula-theme general go-mode hydra ivy-rich
+                   neotree projectile rg)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

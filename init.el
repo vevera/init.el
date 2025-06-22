@@ -1,4 +1,6 @@
-;-*- lexical-binding: t;-*-
+;; -*- lexical-binding: t; -*-
+
+;; -*- lexical-binding: t; -*-
 
 ;; This configs are comming from this link:
 ;; https://github.com/doomemacs/doomemacs/blob/665b627b7c07c8d29ec8d334588cecc2ba308248/docs/faq.org#how-does-doom-start-up-so-quickly
@@ -143,7 +145,7 @@
 ;;hydra
 (use-package hydra)
 
-(defhydra hydra-window (global-map "C-x c")
+(defhydra hydra-window (:color "pink")
   "zoom"
   ("g" text-scale-increase "in")
   ("l" text-scale-decrease "out")  
@@ -158,8 +160,13 @@
   ("]" enlarge-window-horizontally "enlarge window h")
   ("[" shrink-window-horizontally "shrink window h")    
   ("6" enlarge-window "enlarge window v")
-  ("7" shrink-window "shrink window v")        
-  )
+  ("7" shrink-window "shrink window v")
+  ("c" compile "compile")
+)
+
+(define-key global-map (kbd "C-x C-C") 'hydra-window/body)
+(define-key global-map (kbd "C-c C-x") 'hydra-window/body)
+(define-key global-map (kbd "C-x c") 'hydra-window/body)
 
 (defhydra hydra-undo (global-map "C-x u")
   "undo"
@@ -233,9 +240,11 @@
 (add-hook 'go-ts-mode 'eglot-ensure)
 
 (use-package rg)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
+(setq indent-tabs-mode nil)
+(setq tab-width 4)
 (setq indent-line-function 'insert-tab)
+
+(setq go-ts-mode-indent-offset tab-width)
 
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-mode))
@@ -246,6 +255,8 @@
 (setq neo-window-fixed-size nil)
 
 (setq neo-window-position 'right)
+
+(use-package magit :ensure t)
 
 (defun somefunction ()
   (interactive)

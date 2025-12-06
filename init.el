@@ -15,7 +15,7 @@
           gc-cons-percentage 0.1)))
 
 (defvar doom-gc-cons-threshold gc-cons-threshold)
-        
+
 (defun doom-defer-garbage-collection-h ()
   (setq gc-cons-threshold most-positive-fixnum))
 
@@ -75,7 +75,7 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;nice font that the youtube guy use, might change that in the future.
+    ;nice font that the youtube guy use, might change that in the future.
 (set-face-attribute 'default nil :font "Cascadia Code Light" :height 110)
 
 ;necessary to install other packages
@@ -106,11 +106,6 @@
 (global-unset-key (kbd "C-x C-c"))
 
 (use-package all-the-icons)
-
-;nice looking footer
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
 
 ;helper when I dont know yet the key I want to press
 (use-package which-key
@@ -162,7 +157,7 @@
   ("6" enlarge-window "enlarge window v")
   ("7" shrink-window "shrink window v")
   ("c" compile "compile")
-)
+  )
 
 (define-key global-map (kbd "C-x C-C") 'hydra-window/body)
 (define-key global-map (kbd "C-c C-x") 'hydra-window/body)
@@ -180,14 +175,27 @@
   :prefix-command 'my-custom-cmd
   :prefix-map 'my-custom-map)
 
+(defun my-clang-format ()
+  (interactive)
+  (save-buffer)
+  (shell-command
+   (if (string-match (concat "\\.rs$") buffer-file-name)
+       (concat "rustfmt " buffer-file-name)
+     (if (string-match (concat "\\.\\(c\\|h\\|hpp\\|cpp\\)$") buffer-file-name)
+	 (concat "clang-format.exe -i --style=\"Google\" --sort-includes=false " buffer-file-name)
+       "echo \"do little\"")           
+     ))  
+  (revert-buffer t t)
+ )
+
 (my-custom-def
-   "kd" '(clang-format :which-key "clang-formating file")
-   ";" '(comment-or-uncomment-region :which-key "coment region")
-   "mf" '(make-frame :which-key "make frame")
-   "fn" '(next-window-any-frame :which-key "next frame")
-   "g" '(revert-buffer :which-key "go back no file system")
-   "cr" '(counsel-rg :which-key "counsel rg" )
-   "rg" '(rg :which-key "rg"))
+  "kd" '(my-clang-format :which-key "clang-formating file")
+  ";" '(comment-or-uncomment-region :which-key "coment region")
+  "mf" '(make-frame :which-key "make frame")
+  "fn" '(next-window-any-frame :which-key "next frame")
+  "g" '(revert-buffer :which-key "go back no file system")
+  "cr" '(counsel-rg :which-key "counsel rg" )
+  "rg" '(rg :which-key "rg"))
 
 ;making emacsn my own editor, keys that i use a lot being maped to 
 ;easy bindings
@@ -195,8 +203,8 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
 ;my favorite themeoo  
-(use-package dracula-theme)
-(load-theme 'dracula t)
+(use-package gruber-darker-theme)
+(load-theme 'gruber-darker t)
 
 ;maximize on startup
 (set-frame-parameter nil 'fullscreen 'maximized)
@@ -238,6 +246,13 @@
 (add-hook 'javascript-mode-hook 'eglot-ensure)
 (add-hook 'typescript-ts-mode-hook 'eglot-ensure)
 (add-hook 'go-ts-mode 'eglot-ensure)
+(add-hook 'rust-mode-hook 'eglot-ensure)
+
+(add-to-list 'eglot-server-programs
+             '((rust-ts-mode rust-mode) .
+               ("rust-analyzer" :initializationOptions (:check (:command "clippy")))))
+
+(setq eglot-ignored-server-capabilities '(:inlayHintProvider))
 
 (use-package rg)
 (setq indent-tabs-mode nil)
@@ -249,6 +264,7 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
 
 (use-package neotree)
 (global-set-key [f8] 'neotree-toggle)
@@ -258,7 +274,32 @@
 
 (use-package magit :ensure t)
 
+(use-package drag-stuff)
+(defhydra drag-stuff-hydra (:color "blue")
+  "drag things"
+  ("f" drag-stuff-right "drag right")
+  ("b" drag-stuff-left "drag left")
+  ("n" drag-stuff-down "drag down")
+  ("p" drag-stuff-up "drag up")  
+)
+(define-key global-map (kbd "C-c d") 'drag-stuff-hydra/body)
+(define-key global-map (kbd "C-c C-d") 'drag-stuff-hydra/body)
+
+;(set-frame-parameter (selected-frame) 'alpha '(99 99))
+;(add-to-list 'default-frame-alist '(alpha 99 99))
+
+(use-package multiple-cursors)
+(defhydra cursor-hydra (:color "pink")
+  "cursor"
+  ("m" mc/edit-lines "edit lines of region")
+  ("p" mc/mark-previous-like-this "mark prev like this")
+  ("n" mc/mark-next-like-this "mark next like this")    
+)
+(define-key global-map (kbd "C-c m") 'cursor-hydra/body)
+
 (defun somefunction ()
   (interactive)
   (funcall 'shell-command "cd c: &") 
  )
+
+(setq find-program "C:\\msys64\\usr\\bin\\find.exe")

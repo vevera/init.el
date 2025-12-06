@@ -4,10 +4,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("01a9797244146bbae39b18ef37e6f2ca5bebded90d9fe3a2f342a9e863aaa4fd"
+     default))
  '(package-selected-packages
-   '(all-the-icons clang-format company counsel doom-modeline
-		   dracula-theme general go-mode hydra ivy-rich magit
-		   neotree pdf-tools projectile rg)))
+   '(all-the-icons clang-format company counsel dracula-theme drag-stuff
+		   general go-mode gruber-darker-theme hydra ivy-rich
+		   magit multiple-cursors neotree org-plus-contrib
+		   projectile rg)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

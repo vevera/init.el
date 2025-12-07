@@ -6,6 +6,9 @@
 ;; https://github.com/doomemacs/doomemacs/blob/665b627b7c07c8d29ec8d334588cecc2ba308248/docs/faq.org#how-does-doom-start-up-so-quickly
 (setq package-quickstart t)
 
+(setq default-frame-alist '((undecorated . t)))
+(add-to-list 'default-frame-alist '(undecorated . t))
+
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
       gc-cons-percentage 0.6)
 
@@ -46,6 +49,9 @@
 (tooltip-mode -1)
 (set-fringe-mode 10)
 
+(setq visible-bell       nil
+      ring-bell-function #'ignore)
+
 (menu-bar-mode -1)
 
 (setq visible-bell t)
@@ -75,8 +81,8 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-    ;nice font that the youtube guy use, might change that in the future.
-(set-face-attribute 'default nil :font "Cascadia Code Light" :height 110)
+;nice font that the youtube guy use, might change that in the future.
+;(set-face-attribute 'default nil :font "Cascadia Code Light" :height 110)
 
 ;necessary to install other packages
 (require 'package)
